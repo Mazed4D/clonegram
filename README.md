@@ -1,3 +1,3 @@
 # Cloneagram WIP
 
-### Instagram clone made using React for the front-end and Firebase for the back-end.
+### Instagram clone made using React for the frontend and Firebase for the backend.
