@@ -1,7 +1,7 @@
 import React from 'react';
+import { Outlet } from 'react-router';
 import styled from 'styled-components';
 import BottomNavigation from '../ui/BottomNavigation';
-import Card from '../ui/Card';
 import TopNavigation from '../ui/TopNavigation';
 
 const LayoutDiv = styled.div`
@@ -27,7 +27,9 @@ const Layout = ({ children }) => {
 	return (
 		<LayoutDiv>
 			<TopNavigation />
-			<div className='main'>{children}</div>
+			<div className='main'>
+				<Outlet />
+			</div>
 			<BottomNavigation />
 		</LayoutDiv>
 	);

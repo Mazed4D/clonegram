@@ -73,13 +73,14 @@ const Form = styled.form`
 `;
 
 const Login = () => {
-	const { signup, signin, loading, error, res } = useAuth();
+	const { signup, signin, loading, error } = useAuth();
 	const navigate = useNavigate();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [name, setName] = useState('');
 	const [newUser, setNewUser] = useState(false);
 	const [showPwd, setShowPwd] = useState(false);
+	const [submitSuccess, setSubmitSuccess] = useState(false);
 	const emailRef = useRef('');
 	const passwordRef = useRef('');
 	const nameRef = useRef('');
@@ -119,11 +120,12 @@ const Login = () => {
 			}
 			if (error) {
 				alert(error);
+				setSubmitSuccess(true);
 			} else {
-				alert('here!');
-				(() => {
-					navigate('/');
-				})();
+				setTimeout(() => {
+					setSubmitSuccess(false);
+					navigate('/', { replace: true });
+				}, 300);
 			}
 		} else {
 			alert(`Bad password or user doesn't exist.`);
@@ -133,6 +135,7 @@ const Login = () => {
 	return (
 		<Form>
 			{loading && <Loading />}
+			{submitSuccess && <Loading text='Authorization succesful!' />}
 			<label htmlFor='email'>Email</label>
 			<input
 				type='email'

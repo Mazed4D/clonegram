@@ -22,10 +22,10 @@ const Overlay = styled.div`
 	}
 `;
 
-const Loading = () => {
+const Loading = ({ text = 'Loading...' }) => {
 	return (
 		<Overlay>
-			<h2>Loading...</h2>
+			<h2>{text}</h2>
 		</Overlay>
 	);
 };

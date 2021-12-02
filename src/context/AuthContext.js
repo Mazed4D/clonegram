@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
 	const [user, setUser] = useState();
 	const [loading, setLoading] = useState();
 	const [error, setError] = useState();
-	const [res, setRes] = useState();
 
 	useEffect(() => {
 		setLoading(true);
@@ -41,7 +40,7 @@ export const AuthProvider = ({ children }) => {
 				// // ...
 			})
 			.then((res) => {
-				setRes(res);
+				// console.log(res)
 			})
 			.catch((error) => {
 				setError(error.code + ' ' + error.message);
@@ -55,7 +54,7 @@ export const AuthProvider = ({ children }) => {
 		setLoading(true);
 		signInWithEmailAndPassword(auth, email, password)
 			.then((res) => {
-				setRes(res);
+				// console.log(res)
 			})
 			.catch((error) => {
 				setError(error.code + ' ' + error.message);
@@ -73,7 +72,6 @@ export const AuthProvider = ({ children }) => {
 		user,
 		loading,
 		error,
-		res,
 		signup,
 		signin,
 		logout,

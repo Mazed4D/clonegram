@@ -1,8 +1,8 @@
 import React from 'react';
-import Layout from '../components/layout/Layout';
+import AddComponent from '../components/ui/AddComponent';
 
 const Add = () => {
-	return <Layout></Layout>;
+	return <AddComponent />;
 };
 
 export default Add;

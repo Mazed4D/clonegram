@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/layout/Layout';
 import { useAuth } from '../context/AuthContext';
 import placeholderImg from '../images/user.png';
 import styled from 'styled-components';
@@ -22,16 +21,19 @@ const Profile = () => {
 	};
 
 	return (
-		<Layout>
+		<>
 			<UserInfo className='userInfo'>
 				<img src={placeholderImg} alt='placeholder' />
 				<h2>{user.displayName}</h2>
+				<h3>0 Followers</h3>
+				<h3>0 Followings</h3>
 			</UserInfo>
+			<button onClick={logoutHandler}>logout</button>
+
 			<div className='images'>
 				<h3>images here</h3>
 			</div>
-			<button onClick={logoutHandler}>logout</button>
-		</Layout>
+		</>
 	);
 };
 
