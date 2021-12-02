@@ -2,7 +2,6 @@ import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import placeholderImg from '../images/user.png';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router';
 
 const UserInfo = styled.div`
 	display: flex;
@@ -11,14 +10,7 @@ const UserInfo = styled.div`
 `;
 
 const Profile = () => {
-	const { user, logout } = useAuth();
-	const navigate = useNavigate();
-	console.info(user);
-
-	const logoutHandler = () => {
-		logout();
-		navigate('/auth');
-	};
+	const { user } = useAuth();
 
 	return (
 		<>
@@ -28,7 +20,6 @@ const Profile = () => {
 				<h3>0 Followers</h3>
 				<h3>0 Followings</h3>
 			</UserInfo>
-			<button onClick={logoutHandler}>logout</button>
 
 			<div className='images'>
 				<h3>images here</h3>

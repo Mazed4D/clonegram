@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
+import { ref, onValue } from 'firebase/database';
 
 const Image = styled.img`
 	width: 60%;

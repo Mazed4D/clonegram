@@ -6,6 +6,7 @@ import TopNavigation from '../ui/TopNavigation';
 
 const LayoutDiv = styled.div`
 	display: grid;
+	font-family: 'PT Sans Narrow', sans-serif;
 	outline: none;
 	padding: 0;
 	max-width: 100vw;

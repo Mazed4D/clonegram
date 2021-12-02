@@ -21,6 +21,9 @@ const StyledButton = styled.button`
 	&:active {
 		color: #0096ce;
 	}
+	&:disabled {
+		display: none;
+	}
 `;
 
 const Button = ({ children, navigateTo, disabled }) => {
