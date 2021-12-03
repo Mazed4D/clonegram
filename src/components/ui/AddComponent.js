@@ -66,7 +66,7 @@ const AddComponent = () => {
 		const postRef = ref(storage, path);
 		console.info(image);
 		uploadBytes(postRef, image)
-			.then((snapshot) => {
+			.then(() => {
 				alert('Image posted!');
 			})
 			.catch((err) => {
