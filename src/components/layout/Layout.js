@@ -20,6 +20,7 @@ const LayoutDiv = styled.div`
 		@media (min-width: 768px) {
 			width: 40rem;
 			margin: 0 auto;
+			padding: 0;
 		}
 	}
 `;

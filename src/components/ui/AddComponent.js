@@ -1,7 +1,10 @@
 import React from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
-import { ref, onValue } from 'firebase/database';
+// import { ref, onValue } from 'firebase/database';
+import { storage } from '../../firebase';
+import { useAuth } from '../../context/AuthContext';
+import { uploadBytes, ref } from 'firebase/storage';
 
 const Image = styled.img`
 	width: 60%;
@@ -47,13 +50,29 @@ const ImageUpload = styled.div`
 
 const AddComponent = () => {
 	const [image, setImage] = useState();
+	const [imgBlob, setImgBlob] = useState();
+	const [extension, setExtension] = useState();
+	const { user } = useAuth();
 
 	const changeHandler = (event) => {
-		setImage(URL.createObjectURL(event.target.files[0]));
-		console.info(event);
+		const filename = event.target.files[0].name;
+		setImage(event.target.files[0]);
+		setExtension(filename.substring(filename.lastIndexOf('.') + 1));
+		setImgBlob(URL.createObjectURL(event.target.files[0]));
 	};
 
-	const submitImage = () => {};
+	const submitImage = async () => {
+		const path = `/posts/${user.uid}/${Date.now()}.${extension}`;
+		const postRef = ref(storage, path);
+		console.info(image);
+		uploadBytes(postRef, image)
+			.then((snapshot) => {
+				alert('Image posted!');
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
 
 	return (
 		<ImageUpload>
@@ -66,7 +85,7 @@ const AddComponent = () => {
 				onChange={changeHandler}
 				style={{ visibility: 'hidden' }}
 			/>
-			<Image src={image} alt='' />
+			<Image src={imgBlob} alt='' />
 			{image && <button onClick={submitImage}>Submit image</button>}
 		</ImageUpload>
 	);

@@ -14,6 +14,7 @@ const CardDiv = styled.div`
 	flex-direction: column;
 	height: fit-content;
 	.top {
+		margin: 0 1rem;
 		max-height: 3.5rem;
 		padding: 0.1rem 0;
 		display: flex;
@@ -29,11 +30,11 @@ const CardDiv = styled.div`
 		}
 	}
 	.bottom {
-		max-height: 3rem;
+		margin: 0 1rem;
+		height: 3rem;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 0 1rem;
 	}
 	Button {
 		color: white;
