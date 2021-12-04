@@ -29,14 +29,15 @@ const TopNav = styled.div`
 `;
 
 const StyledButton = styled.button`
-	border-radius: 10px;
+	/* border-radius: 10px; */
 	font-weight: 800;
-	background-color: #0096ce;
+	background-color: #000000;
 	color: white;
 	border: none;
-	padding: 0.6rem;
+	height: 100%;
+	/* padding: 0.6rem; */
 	/* margin: 1rem; */
-	margin-right: 2rem;
+	/* margin-right: 2rem; */
 	transition: all 0.1s ease-in;
 	&:active,
 	:hover {
