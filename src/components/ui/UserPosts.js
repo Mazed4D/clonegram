@@ -4,6 +4,7 @@ import Card from './Card';
 import { database } from '../../firebase';
 import { storage } from '../../firebase';
 import { getDownloadURL, ref, list } from 'firebase/storage';
+import { onValue, ref as dbRef } from 'firebase/database';
 
 const PostDiv = styled.div`
 	display: flex;
@@ -15,15 +16,23 @@ const PostDiv = styled.div`
 const UserPosts = ({ userId }) => {
 	const imagesRef = ref(storage, `/posts/${userId}`);
 	const [images, setImages] = useState([]);
+	const [titles, setTitles] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [nextPageToken, setNextPageToken] = useState();
 
 	useEffect(() => {
 		let imageUrls = [];
+		let imageTitles = [];
 		const listFetch = async () => {
 			await list(imagesRef, { maxResults: 12 }).then((res) => {
 				setNextPageToken(res.nextPageToken);
 				res.items.forEach((item) => {
+					const itemName = item.name.split('.')[0];
+					const titleRef = dbRef(database, `/posts/${userId}${itemName}/title`);
+					onValue(titleRef, (snapshot) => {
+						const data = snapshot.val();
+						imageTitles.push(data);
+					});
 					getDownloadURL(item).then((res) => {
 						imageUrls.push(res);
 					});
@@ -34,6 +43,7 @@ const UserPosts = ({ userId }) => {
 		setIsLoading(true);
 		setTimeout(() => {
 			setImages(imageUrls);
+			setTitles(imageTitles);
 			setIsLoading(false);
 		}, 700);
 	}, []);
@@ -64,8 +74,8 @@ const UserPosts = ({ userId }) => {
 
 	return (
 		<PostDiv>
-			{images.map((url) => {
-				return <Card image={url} />;
+			{images.map((url, index) => {
+				return <Card image={url} title={titles[index]} />;
 			})}
 		</PostDiv>
 	);
