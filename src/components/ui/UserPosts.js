@@ -5,6 +5,7 @@ import { database } from '../../firebase';
 import { storage } from '../../firebase';
 import { getDownloadURL, ref, list } from 'firebase/storage';
 import { onValue, ref as dbRef } from 'firebase/database';
+import Loading from './Loading';
 
 const PostDiv = styled.div`
 	display: flex;
@@ -73,11 +74,14 @@ const UserPosts = ({ userId }) => {
 	};
 
 	return (
-		<PostDiv>
-			{images.map((url, index) => {
-				return <Card image={url} title={titles[index]} />;
-			})}
-		</PostDiv>
+		<>
+			{isLoading && <Loading />}
+			<PostDiv>
+				{images.map((url, index) => {
+					return <Card image={url} title={titles[index]} />;
+				})}
+			</PostDiv>
+		</>
 	);
 };
 
