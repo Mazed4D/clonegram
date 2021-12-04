@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import { storage } from '../../firebase';
 import { useAuth } from '../../context/AuthContext';
 import { uploadBytes, ref } from 'firebase/storage';
+import { ref as dbRef, set } from 'firebase/database';
+import { database } from '../../firebase';
 
 const Image = styled.img`
 	width: 60%;
@@ -27,7 +29,7 @@ const ImageUpload = styled.div`
 	justify-content: center;
 	align-items: center;
 	gap: 2rem;
-	label,
+	.imageLabel,
 	button {
 		border: none;
 		background-color: white;
@@ -48,8 +50,31 @@ const ImageUpload = styled.div`
 	}
 `;
 
+const StyledTitleDiv = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 1rem;
+	label {
+		background-color: white;
+		border-radius: 10px;
+		padding: 0.5rem;
+		width: 100%;
+		text-align: center;
+	}
+`;
+
+const StyledInput = styled.input`
+	border-radius: 10px;
+	border: none;
+	width: 100%;
+	text-align: center;
+`;
+
 const AddComponent = () => {
 	const [image, setImage] = useState();
+	const [title, setTitle] = useState('');
 	const [imgBlob, setImgBlob] = useState();
 	const [extension, setExtension] = useState();
 	const { user } = useAuth();
@@ -61,10 +86,25 @@ const AddComponent = () => {
 		setImgBlob(URL.createObjectURL(event.target.files[0]));
 	};
 
+	const titleChangeHandler = (event) => {
+		setTitle(event.target.value);
+	};
+
 	const submitImage = async () => {
-		const path = `/posts/${user.uid}/${Date.now()}.${extension}`;
+		const imgName = Date.now();
+		const path = `/posts/${user.uid}/${imgName}.${extension}`;
+		const metaPath = `/posts/${user.uid}${imgName}`;
 		const postRef = ref(storage, path);
-		console.info(image);
+		const metaRef = dbRef(database, metaPath);
+		set(metaRef, {
+			title: title,
+		})
+			.then((res) => {
+				alert(res);
+			})
+			.catch((err) => {
+				console.info(err);
+			});
 		uploadBytes(postRef, image)
 			.then(() => {
 				alert('Image posted!');
@@ -76,7 +116,9 @@ const AddComponent = () => {
 
 	return (
 		<ImageUpload>
-			<label htmlFor='image'>Choose image</label>
+			<label htmlFor='image' className='imageLabel'>
+				Choose image
+			</label>
 			<input
 				type='file'
 				name='image'
@@ -84,9 +126,26 @@ const AddComponent = () => {
 				accept='image/png, image/jpeg'
 				onChange={changeHandler}
 				style={{ visibility: 'hidden' }}
+				required
 			/>
 			<Image src={imgBlob} alt='' />
-			{image && <button onClick={submitImage}>Submit image</button>}
+			{image && (
+				<StyledTitleDiv>
+					<label htmlFor='title'>Image title</label>
+					<StyledInput
+						type='text'
+						name='title'
+						id='title'
+						value={title}
+						onChange={titleChangeHandler}
+						required
+						className='titleInput'
+						maxLength={14}
+					/>
+				</StyledTitleDiv>
+			)}
+
+			{image && title && <button onClick={submitImage}>Submit image</button>}
 		</ImageUpload>
 	);
 };
