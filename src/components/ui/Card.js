@@ -14,11 +14,10 @@ const CardDiv = styled.div`
 	flex-direction: column;
 	height: fit-content;
 	.top {
-		margin: 0 1rem;
 		max-height: 3.5rem;
 		padding: 0.1rem 0;
 		display: flex;
-		justify-content: flex-start;
+		justify-content: space-around;
 		align-items: center;
 		h3 {
 			margin: 0 1rem;
@@ -27,13 +26,14 @@ const CardDiv = styled.div`
 			border: 3px solid #006891;
 			border-radius: 50%;
 			width: 3rem;
+			height: 3rem;
+			object-fit: cover;
 		}
 	}
 	.bottom {
-		margin: 0 1rem;
 		height: 3rem;
 		display: flex;
-		justify-content: space-between;
+		justify-content: space-around;
 		align-items: center;
 	}
 	Button {

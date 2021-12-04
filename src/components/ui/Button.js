@@ -7,7 +7,7 @@ const StyledButton = styled.button`
 	background-color: transparent;
 	border-color: transparent;
 	color: black;
-	margin: 8px;
+	margin: 8px 0;
 	padding: 0;
 	font-size: 2rem;
 	min-width: fit-content;
