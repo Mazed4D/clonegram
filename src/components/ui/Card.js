@@ -54,18 +54,23 @@ const Img = styled.img`
 	height: fit-content;
 `;
 
-const Card = ({ user, userImg, likes = 0, description = 'placeholder' }) => {
+const Card = ({
+	user,
+	image = placeholder,
+	likes = 0,
+	title = 'Placeholder',
+}) => {
 	return (
 		<CardDiv>
 			<div className='top'>
-				<img src={userImage} alt='user' />
+				<img src={placeholder} alt='user' />
 				<h3>user</h3>
 				<p>follow</p>
 			</div>
-			<Img src={placeholder} alt='' />
+			<Img src={image} alt={title} />
 			<div className='bottom'>
 				<p>{likes} likes</p>
-				<p>{description}</p>
+				<p>{title}</p>
 				<Button>
 					<FontAwesomeIcon icon={faHeart} className='icon' />
 				</Button>

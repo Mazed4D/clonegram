@@ -5,6 +5,7 @@ import Add from './pages/Add';
 import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import { useAuth } from './context/AuthContext';
+import Posts from './pages/Posts';
 import Layout from './components/layout/Layout';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
 						<Route path='' exact element={<Home />} />
 						<Route path='user/:userId' element={<Profile />} />
 						<Route path='add' exact element={<Add />} />
+						<Route path='posts/:userId' element={<Posts />} />
 					</>
 				) : (
 					<>
