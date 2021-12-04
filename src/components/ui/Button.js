@@ -26,11 +26,13 @@ const StyledButton = styled.button`
 	}
 `;
 
-const Button = ({ children, navigateTo, disabled }) => {
+const Button = ({ navFn, children, navigateTo, disabled }) => {
 	const navigate = useNavigate();
 
 	const onClick = () => {
-		navigate(navigateTo);
+		if (navFn) {
+			navFn(navigateTo);
+		}
 	};
 
 	return (

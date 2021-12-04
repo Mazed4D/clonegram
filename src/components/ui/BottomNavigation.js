@@ -8,6 +8,7 @@ import {
 	faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router';
 
 const BottomNav = styled.nav`
 	background-color: #006891;
@@ -26,27 +27,36 @@ const BottomNav = styled.nav`
 
 const BottomNavigation = () => {
 	const { user } = useAuth();
+	const navigate = useNavigate();
 	let disabled = true;
 
 	if (user) {
 		disabled = false;
 	}
 
+	const btnNavigate = (path) => {
+		navigate(path);
+	};
+
 	return (
 		<BottomNav>
-			<Button navigateTo='/' disabled={disabled}>
+			<Button navigateTo='/' navFn={btnNavigate} disabled={disabled}>
 				<FontAwesomeIcon icon={faHome} />
 			</Button>
-			<Button navigateTo='/add' disabled={disabled}>
+			<Button navigateTo='/add' navFn={btnNavigate} disabled={disabled}>
 				<FontAwesomeIcon icon={faPlusCircle} />
 			</Button>
 			{!user && (
-				<Button navigateTo={`/`} disabled={disabled}>
+				<Button navigateTo={`/`} navFn={btnNavigate} disabled={disabled}>
 					<FontAwesomeIcon icon={faUser} />
 				</Button>
 			)}
 			{user && (
-				<Button navigateTo={`/user/${user.uid}`} disabled={disabled}>
+				<Button
+					navigateTo={`/user/${user.uid}`}
+					navFn={btnNavigate}
+					disabled={disabled}
+				>
 					<FontAwesomeIcon icon={faUser} />
 				</Button>
 			)}
