@@ -89,6 +89,7 @@ const UserPosts = ({ userId }) => {
 							image={url}
 							title={titles[index]}
 							postName={postNames[index]}
+							key={postNames[index]}
 						/>
 					);
 				})}
