@@ -25,10 +25,12 @@ const StyledButton = styled.button`
 	}
 `;
 
-const Button = ({ navFn, children, navigateTo, disabled }) => {
+const Button = ({ navFn, children, navigateTo, disabled, likeFn }) => {
 	const onClick = () => {
 		if (navFn) {
 			navFn(navigateTo);
+		} else {
+			likeFn();
 		}
 	};
 
