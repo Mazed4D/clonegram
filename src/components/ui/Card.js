@@ -1,12 +1,11 @@
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import placeholder from '../../images/placeholder.jpg';
 import Button from './Button';
-import userImage from '../../images/user.png';
 import { database } from '../../firebase';
-import { update, remove, ref as dbRef, get } from 'firebase/database';
+import { update, remove, onValue, ref as dbRef, get } from 'firebase/database';
 
 const CardDiv = styled.div`
 	background-color: #0096ce;
@@ -59,14 +58,42 @@ const Img = styled.img`
 const Card = ({
 	user,
 	image = placeholder,
-	likes = 0,
 	title = 'Placeholder',
 	postName = '',
 }) => {
+	const [userName, setUserName] = useState('user');
+	const [likeNum, setLikeNum] = useState(0);
+	const likesRef = dbRef(database, `/posts/${postName}/likes`);
+
+	const fetchLikes = async () => {
+		onValue(likesRef, (snapshot) => {
+			const data = snapshot.val();
+			if (data !== null) {
+				setLikeNum(Object.keys(data).length);
+			} else {
+				setLikeNum(0);
+			}
+			console.log(data);
+		});
+	};
+
+	const fetchUser = async () => {
+		const path = `/users/${user}`;
+		const ref = dbRef(database, path);
+		get(ref).then((snapshot) => {
+			setUserName(snapshot.val());
+		});
+	};
+
+	useEffect(() => {
+		fetchLikes();
+		fetchUser();
+	}, []);
+
 	const likeFn = async () => {
 		const path = `/posts/${postName}/likes`;
 		const ref = dbRef(database, path);
-		const listFetch = () => {
+		const like = () => {
 			get(ref).then((snapshot) => {
 				const res = snapshot.val();
 				console.log(res);
@@ -84,34 +111,25 @@ const Card = ({
 						});
 					return;
 				} else {
-					// const data = {
-					// [user]: false,
-					// };
 					remove(dbRef(database, `/posts/${postName}/likes/${user}`));
-					// update(ref, data)
-					// .then((res) => {
-					// console.info(res);
-					// })
-					// .catch((err) => {
-					// console.info(err);
-					// });
 					return;
 				}
 			});
 		};
-		listFetch();
+		like();
+		fetchLikes();
 	};
 
 	return (
 		<CardDiv>
 			<div className='top'>
 				<img src={placeholder} alt='user' />
-				<h3>user</h3>
+				<h3>{userName}</h3>
 				<p>follow</p>
 			</div>
 			<Img src={image} alt={title} />
 			<div className='bottom'>
-				<p>{likes} likes</p>
+				<p>{likeNum} likes</p>
 				<p>{title}</p>
 				<Button likeFn={likeFn}>
 					<FontAwesomeIcon icon={faHeart} className='icon' />
