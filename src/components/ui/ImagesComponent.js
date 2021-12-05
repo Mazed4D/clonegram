@@ -73,7 +73,7 @@ const ImagesComponent = ({ userId }) => {
 
 	return (
 		<>
-			{isLoading && <h1>Loading...</h1>}
+			{isLoading && <Loading />}
 			<ImageBox>
 				{images.map((url, index) => {
 					console.log(url);
