@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import placeholder from '../../images/placeholder.jpg';
 import Button from './Button';
 import userImage from '../../images/user.png';
+import { database } from '../../firebase';
+import { update, onValue, ref as dbRef, get } from 'firebase/database';
 
 const CardDiv = styled.div`
 	background-color: #0096ce;
@@ -59,7 +61,46 @@ const Card = ({
 	image = placeholder,
 	likes = 0,
 	title = 'Placeholder',
+	postName = '',
 }) => {
+	const likeFn = async () => {
+		const path = `/posts/${postName}/likes`;
+		const ref = dbRef(database, path);
+		const listFetch = () => {
+			get(ref).then((snapshot) => {
+				const res = snapshot.val();
+				console.log(res);
+				if (res === null || res[user] === false) {
+					const data = {
+						[user]: true,
+					};
+
+					update(ref, data)
+						.then((res) => {
+							console.info(res);
+						})
+						.catch((err) => {
+							console.info(err);
+						});
+					return;
+				} else {
+					const data = {
+						[user]: false,
+					};
+					update(ref, data)
+						.then((res) => {
+							console.info(res);
+						})
+						.catch((err) => {
+							console.info(err);
+						});
+					return;
+				}
+			});
+		};
+		listFetch();
+	};
+
 	return (
 		<CardDiv>
 			<div className='top'>
@@ -71,7 +112,7 @@ const Card = ({
 			<div className='bottom'>
 				<p>{likes} likes</p>
 				<p>{title}</p>
-				<Button>
+				<Button likeFn={likeFn}>
 					<FontAwesomeIcon icon={faHeart} className='icon' />
 				</Button>
 			</div>
