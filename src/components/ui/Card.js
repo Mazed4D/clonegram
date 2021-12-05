@@ -6,6 +6,7 @@ import placeholder from '../../images/placeholder.jpg';
 import Button from './Button';
 import { database } from '../../firebase';
 import { update, remove, onValue, ref as dbRef, get } from 'firebase/database';
+import { useNavigate } from 'react-router';
 
 const CardDiv = styled.div`
 	background-color: #0096ce;
@@ -64,6 +65,7 @@ const Card = ({
 	const [userName, setUserName] = useState('user');
 	const [likeNum, setLikeNum] = useState(0);
 	const likesRef = dbRef(database, `/posts/${postName}/likes`);
+	const navigate = useNavigate();
 
 	const fetchLikes = async () => {
 		onValue(likesRef, (snapshot) => {
@@ -81,7 +83,9 @@ const Card = ({
 		const path = `/users/${user}`;
 		const ref = dbRef(database, path);
 		get(ref).then((snapshot) => {
-			setUserName(snapshot.val());
+			if (snapshot.val() !== null) {
+				setUserName(snapshot.val());
+			}
 		});
 	};
 
@@ -120,10 +124,14 @@ const Card = ({
 		fetchLikes();
 	};
 
+	const navToUser = () => {
+		navigate(`/user/${user}`);
+	};
+
 	return (
 		<CardDiv>
 			<div className='top'>
-				<img src={placeholder} alt='user' />
+				<img src={placeholder} alt='user' onClick={navToUser} />
 				<h3>{userName}</h3>
 				<p>follow</p>
 			</div>
