@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router';
 
 const StyledButton = styled.button`
 	overflow: hidden;
@@ -27,8 +26,6 @@ const StyledButton = styled.button`
 `;
 
 const Button = ({ navFn, children, navigateTo, disabled }) => {
-	const navigate = useNavigate();
-
 	const onClick = () => {
 		if (navFn) {
 			navFn(navigateTo);
