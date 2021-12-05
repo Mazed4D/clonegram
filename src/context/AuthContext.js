@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { auth } from '../firebase';
+import { auth, database } from '../firebase';
+import { set, ref } from 'firebase/database';
 import {
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
@@ -33,11 +34,10 @@ export const AuthProvider = ({ children }) => {
 		setLoading(true);
 		createUserWithEmailAndPassword(auth, email, password)
 			.then((userCredential) => {
+				set(ref(database, `/users/${userCredential.user.uid}`), name);
 				return updateProfile(auth.currentUser, {
 					displayName: name,
 				});
-				// const user = userCredential.user;
-				// // ...
 			})
 			.then((res) => {
 				// console.log(res)
