@@ -98,7 +98,6 @@ const AddComponent = () => {
 		const metaRef = dbRef(database, metaPath);
 		set(metaRef, {
 			title: title,
-			likes: 0,
 		})
 			.then((res) => {
 				alert(res);
