@@ -18,18 +18,22 @@ const UserPosts = ({ userId }) => {
 	const imagesRef = ref(storage, `/posts/${userId}`);
 	const [images, setImages] = useState([]);
 	const [titles, setTitles] = useState([]);
+	const [postNames, setPostNames] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [nextPageToken, setNextPageToken] = useState();
 
 	useEffect(() => {
 		let imageUrls = [];
 		let imageTitles = [];
+		let imageNames = [];
 		const listFetch = async () => {
 			await list(imagesRef, { maxResults: 12 }).then((res) => {
 				setNextPageToken(res.nextPageToken);
 				res.items.forEach((item) => {
 					const itemName = item.name.split('.')[0];
-					const titleRef = dbRef(database, `/posts/${userId}${itemName}/title`);
+					const postName = userId + itemName;
+					imageNames.push(postName);
+					const titleRef = dbRef(database, `/posts/${postName}/title`);
 					onValue(titleRef, (snapshot) => {
 						const data = snapshot.val();
 						imageTitles.push(data);
@@ -44,6 +48,7 @@ const UserPosts = ({ userId }) => {
 		setIsLoading(true);
 		setTimeout(() => {
 			setImages(imageUrls);
+			setPostNames(imageNames);
 			setTitles(imageTitles);
 			setIsLoading(false);
 		}, 700);
@@ -78,7 +83,14 @@ const UserPosts = ({ userId }) => {
 			{isLoading && <Loading />}
 			<PostDiv>
 				{images.map((url, index) => {
-					return <Card image={url} title={titles[index]} />;
+					return (
+						<Card
+							user={userId}
+							image={url}
+							title={titles[index]}
+							postName={postNames[index]}
+						/>
+					);
 				})}
 			</PostDiv>
 		</>
