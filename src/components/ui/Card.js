@@ -6,7 +6,7 @@ import placeholder from '../../images/placeholder.jpg';
 import Button from './Button';
 import userImage from '../../images/user.png';
 import { database } from '../../firebase';
-import { update, onValue, ref as dbRef, get } from 'firebase/database';
+import { update, remove, ref as dbRef, get } from 'firebase/database';
 
 const CardDiv = styled.div`
 	background-color: #0096ce;
@@ -84,16 +84,17 @@ const Card = ({
 						});
 					return;
 				} else {
-					const data = {
-						[user]: false,
-					};
-					update(ref, data)
-						.then((res) => {
-							console.info(res);
-						})
-						.catch((err) => {
-							console.info(err);
-						});
+					// const data = {
+					// [user]: false,
+					// };
+					remove(dbRef(database, `/posts/${postName}/likes/${user}`));
+					// update(ref, data)
+					// .then((res) => {
+					// console.info(res);
+					// })
+					// .catch((err) => {
+					// console.info(err);
+					// });
 					return;
 				}
 			});
