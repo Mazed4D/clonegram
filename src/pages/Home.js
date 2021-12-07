@@ -1,27 +1,12 @@
 import React from 'react';
-import Card from '../components/ui/Card';
-// import { useEffect } from 'react';
-// import { useAuth } from '../context/AuthContext';
-// import { useNavigate } from 'react-router';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router';
+import UserPosts from '../components/ui/UserPosts';
 
 const Home = () => {
-	// const { user } = useAuth();
-	// const navigate = useNavigate();
+	const { user } = useAuth();
 
-	// useEffect(() => {
-	// 	setTimeout(() => {
-	// 		if (!user) {
-	// 			navigate('/auth');
-	// 		}
-	// 	}, 500);
-	// }, []);
-
-	return (
-		<>
-			<Card />
-			<Card />
-		</>
-	);
+	return <UserPosts userId={user.uid} />;
 };
 
 export default Home;
