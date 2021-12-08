@@ -7,6 +7,8 @@ import Button from './Button';
 import { database } from '../../firebase';
 import { update, remove, onValue, ref as dbRef, get } from 'firebase/database';
 import { useNavigate } from 'react-router';
+import followFunc from '../../api/followFunc';
+import { useAuth } from '../../context/AuthContext';
 
 const CardDiv = styled.div`
 	background-color: #0096ce;
@@ -23,6 +25,7 @@ const CardDiv = styled.div`
 		align-items: center;
 		h3 {
 			margin: 0 1rem;
+			cursor: pointer;
 		}
 		img {
 			border: 3px solid #006891;
@@ -30,6 +33,7 @@ const CardDiv = styled.div`
 			width: 3rem;
 			height: 3rem;
 			object-fit: cover;
+			cursor: pointer;
 		}
 	}
 	.bottom {
@@ -37,17 +41,38 @@ const CardDiv = styled.div`
 		display: flex;
 		justify-content: space-around;
 		align-items: center;
+		button {
+			color: white;
+			cursor: pointer;
+
+			&:hover,
+			:active {
+				transform: scale(1.1);
+				color: lightpink;
+			}
+			&:active {
+				color: red;
+			}
+		}
 	}
-	Button {
-		color: white;
-		&:hover,
-		:active {
-			transform: scale(1.1);
-			color: lightpink;
-		}
-		&:active {
-			color: red;
-		}
+`;
+
+const FollowBtn = styled.button`
+	font-weight: 600;
+	cursor: pointer;
+	background-color: #006891;
+	color: white;
+	border-radius: 10px;
+	border: none;
+	padding: 1rem;
+	transition: all 0.1s ease-in;
+	&:hover,
+	:active {
+		transform: scale(0.9);
+	}
+	&:active {
+		color: #006891;
+		background-color: white;
 	}
 `;
 
@@ -62,8 +87,10 @@ const Card = ({
 	title = 'Placeholder',
 	postName = '',
 }) => {
+	const { user: currentUser } = useAuth();
 	const [userName, setUserName] = useState('user');
 	const [likeNum, setLikeNum] = useState(0);
+	const [followState, setFollowState] = useState(false);
 	const likesRef = dbRef(database, `/posts/${postName}/likes`);
 	const navigate = useNavigate();
 
@@ -89,9 +116,23 @@ const Card = ({
 		});
 	};
 
+	const fetchFollowState = async () => {
+		const path = `/follows/${currentUser.uid}/${user}`;
+		const ref = dbRef(database, path);
+		get(ref).then((snapshot) => {
+			if (snapshot.val() === null) {
+				setFollowState(false);
+			} else {
+				setFollowState(true);
+			}
+		});
+	};
+
 	useEffect(() => {
 		fetchLikes();
 		fetchUser();
+		fetchFollowState();
+		console.log('done');
 	}, []);
 
 	const likeFn = async () => {
@@ -128,18 +169,27 @@ const Card = ({
 		navigate(`/user/${user}`);
 	};
 
+	const followFn = () => {
+		followFunc(currentUser.uid, user);
+		setFollowState((state) => {
+			return !state;
+		});
+	};
+
 	return (
 		<CardDiv>
 			<div className='top'>
 				<img src={placeholder} alt='user' onClick={navToUser} />
-				<h3>{userName}</h3>
-				<p>follow</p>
+				<h3 onClick={navToUser}>{userName}</h3>
+				<FollowBtn onClick={followFn}>
+					{followState ? 'Unfollow' : 'Follow'}
+				</FollowBtn>
 			</div>
 			<Img src={image} alt={title} />
 			<div className='bottom'>
 				<p>{likeNum} likes</p>
 				<p>{title}</p>
-				<Button likeFn={likeFn}>
+				<Button likeFn={likeFn} className='likeBtn'>
 					<FontAwesomeIcon icon={faHeart} className='icon' />
 				</Button>
 			</div>
