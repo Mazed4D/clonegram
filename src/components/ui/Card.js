@@ -59,6 +59,7 @@ const CardDiv = styled.div`
 
 const FollowBtn = styled.button`
 	font-weight: 600;
+	width: 6rem;
 	cursor: pointer;
 	background-color: #006891;
 	color: white;
