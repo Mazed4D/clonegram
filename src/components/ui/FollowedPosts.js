@@ -4,8 +4,10 @@ import Card from './Card';
 import { database } from '../../firebase';
 import { storage } from '../../firebase';
 import { getDownloadURL, ref, list } from 'firebase/storage';
-import { onValue, ref as dbRef } from 'firebase/database';
+import { onValue, ref as dbRef, get } from 'firebase/database';
 import Loading from './Loading';
+import listFetch from '../../api/listFetch';
+import fetchFollowedUsers from '../../api/fetchFollowedUsers';
 
 const PostDiv = styled.div`
 	display: flex;
@@ -15,81 +17,60 @@ const PostDiv = styled.div`
 `;
 
 const FollowedPosts = ({ userId }) => {
-	const imagesRef = ref(storage, `/posts/${userId}`);
-	const [images, setImages] = useState([]);
-	const [titles, setTitles] = useState([]);
-	const [postNames, setPostNames] = useState([]);
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState();
 	const [nextPageToken, setNextPageToken] = useState();
+	const [imageState, setImageState] = useState([]);
 
 	useEffect(() => {
-		let imageUrls = [];
-		let imageTitles = [];
-		let imageNames = [];
-		const listFetch = async () => {
-			await list(imagesRef, { maxResults: 12 }).then((res) => {
-				setNextPageToken(res.nextPageToken);
-				res.items.forEach((item) => {
-					const itemName = item.name.split('.')[0];
-					const postName = userId + itemName;
-					imageNames.push(postName);
-					const titleRef = dbRef(database, `/posts/${postName}/title`);
-					onValue(titleRef, (snapshot) => {
-						const data = snapshot.val();
-						imageTitles.push(data);
-					});
-					getDownloadURL(item).then((res) => {
-						imageUrls.push(res);
-					});
+		fetchFollowedUsers(userId).then((res) => {
+			res.forEach((item) => {
+				listFetch(item).then((res) => {
+					setTimeout(() => {
+						setImageState((state) => {
+							return [...state, ...res];
+						});
+					}, 200);
 				});
 			});
-		};
-		listFetch();
-		setIsLoading(true);
-		setTimeout(() => {
-			setImages(imageUrls);
-			setPostNames(imageNames);
-			setTitles(imageTitles);
-			setIsLoading(false);
-		}, 700);
+		});
 	}, []);
 
-	const loadMore = async () => {
-		let imageUrls = [];
-		const listFetch = async () => {
-			await list(imagesRef, { maxResults: 12, pageToken: nextPageToken }).then(
-				(res) => {
-					setNextPageToken(res.nextPageToken);
-					res.items.forEach((item) => {
-						getDownloadURL(item).then((res) => {
-							imageUrls.push(res);
-						});
-					});
-				}
-			);
-		};
-		listFetch();
-		setIsLoading(true);
-		setTimeout(() => {
-			setImages((state) => {
-				return [...state, imageUrls];
-			});
-			setIsLoading(false);
-		}, 700);
-	};
+	// const loadMore = async () => {
+	// 	let imageUrls = [];
+	// 	const listFetch = async () => {
+	// 		await list(imagesRef, { maxResults: 12, pageToken: nextPageToken }).then(
+	// 			(res) => {
+	// 				setNextPageToken(res.nextPageToken);
+	// 				res.items.forEach((item) => {
+	// 					getDownloadURL(item).then((res) => {
+	// 						imageUrls.push(res);
+	// 					});
+	// 				});
+	// 			}
+	// 		);
+	// 	};
+	// 	listFetch();
+	// 	setIsLoading(true);
+	// 	setTimeout(() => {
+	// 		setImages((state) => {
+	// 			return [...state, imageUrls];
+	// 		});
+	// 		setIsLoading(false);
+	// 	}, 700);
+	// };
 
 	return (
 		<>
 			{isLoading && <Loading />}
 			<PostDiv>
-				{images.map((url, index) => {
+				{imageState.map((item) => {
 					return (
 						<Card
-							user={userId}
-							image={url}
-							title={titles[index]}
-							postName={postNames[index]}
-							key={postNames[index]}
+							user={item.user}
+							image={item.url}
+							title={item.title}
+							postName={item.name}
+							key={item.name + Date.now()}
 						/>
 					);
 				})}
