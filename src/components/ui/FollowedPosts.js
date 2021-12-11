@@ -29,35 +29,11 @@ const FollowedPosts = ({ userId }) => {
 						setImageState((state) => {
 							return [...state, ...res];
 						});
-					}, 200);
+					}, 300);
 				});
 			});
 		});
 	}, []);
-
-	// const loadMore = async () => {
-	// 	let imageUrls = [];
-	// 	const listFetch = async () => {
-	// 		await list(imagesRef, { maxResults: 12, pageToken: nextPageToken }).then(
-	// 			(res) => {
-	// 				setNextPageToken(res.nextPageToken);
-	// 				res.items.forEach((item) => {
-	// 					getDownloadURL(item).then((res) => {
-	// 						imageUrls.push(res);
-	// 					});
-	// 				});
-	// 			}
-	// 		);
-	// 	};
-	// 	listFetch();
-	// 	setIsLoading(true);
-	// 	setTimeout(() => {
-	// 		setImages((state) => {
-	// 			return [...state, imageUrls];
-	// 		});
-	// 		setIsLoading(false);
-	// 	}, 700);
-	// };
 
 	return (
 		<>
