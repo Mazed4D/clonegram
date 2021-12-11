@@ -35,6 +35,12 @@ export const AuthProvider = ({ children }) => {
 		createUserWithEmailAndPassword(auth, email, password)
 			.then((userCredential) => {
 				set(ref(database, `/users/${userCredential.user.uid}`), name);
+				set(ref(database, `/follows/${userCredential.user.uid}`), {
+					[userCredential.user.uid]: true,
+				}).then((res) => {
+					console.log(res);
+				});
+
 				return updateProfile(auth.currentUser, {
 					displayName: name,
 				});
