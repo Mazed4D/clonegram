@@ -65,10 +65,16 @@ const Profile = () => {
 		fetchUser();
 	}, []);
 
+	const changeProfilePhoto = () => {};
+
 	return (
 		<div>
 			<UserInfo className='userInfo'>
-				<UserImage src={placeholderImg} alt='placeholder' />
+				<UserImage
+					src={placeholderImg}
+					alt='placeholder'
+					onClick={changeProfilePhoto}
+				/>
 				<UserName>
 					<h3>{userName}</h3>
 					<p>{params.userId}</p>
