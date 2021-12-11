@@ -82,12 +82,7 @@ const Img = styled.img`
 	height: fit-content;
 `;
 
-const Card = ({
-	user,
-	image = placeholder,
-	title = 'Placeholder',
-	postName = '',
-}) => {
+const Card = ({ user, image, title = 'Placeholder', postName = '' }) => {
 	const { user: currentUser } = useAuth();
 	const [userName, setUserName] = useState('user');
 	const [likeNum, setLikeNum] = useState(0);
@@ -103,7 +98,6 @@ const Card = ({
 			} else {
 				setLikeNum(0);
 			}
-			console.log(data);
 		});
 	};
 
@@ -120,7 +114,7 @@ const Card = ({
 	const fetchFollowState = async () => {
 		const path = `/follows/${currentUser.uid}/${user}`;
 		const ref = dbRef(database, path);
-		get(ref).then((snapshot) => {
+		await get(ref).then((snapshot) => {
 			if (snapshot.val() === null) {
 				setFollowState(false);
 			} else {
@@ -133,7 +127,6 @@ const Card = ({
 		fetchLikes();
 		fetchUser();
 		fetchFollowState();
-		console.log('done');
 	}, []);
 
 	const likeFn = async () => {
@@ -182,9 +175,13 @@ const Card = ({
 			<div className='top'>
 				<img src={placeholder} alt='user' onClick={navToUser} />
 				<h3 onClick={navToUser}>{userName}</h3>
-				<FollowBtn onClick={followFn}>
-					{followState ? 'Unfollow' : 'Follow'}
-				</FollowBtn>
+				{user !== currentUser.uid ? (
+					<FollowBtn onClick={followFn}>
+						{followState ? 'Unfollow' : 'Follow'}
+					</FollowBtn>
+				) : (
+					<div></div>
+				)}
 			</div>
 			<Img src={image} alt={title} />
 			<div className='bottom'>

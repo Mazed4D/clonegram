@@ -1,12 +1,12 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router';
-import UserPosts from '../components/ui/UserPosts';
+import FollowedPosts from '../components/ui/FollowedPosts';
 
 const Home = () => {
 	const { user } = useAuth();
 
-	return <UserPosts userId={user.uid} />;
+	return <FollowedPosts userId={user.uid} />;
 };
 
 export default Home;
