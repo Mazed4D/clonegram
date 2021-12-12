@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Card from './Card';
-import { database } from '../../firebase';
-import { storage } from '../../firebase';
-import { getDownloadURL, ref, list } from 'firebase/storage';
-import { onValue, ref as dbRef, get } from 'firebase/database';
 import Loading from './Loading';
 import listFetch from '../../api/listFetch';
 import fetchFollowedUsers from '../../api/fetchFollowedUsers';
