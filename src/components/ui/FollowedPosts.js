@@ -19,17 +19,19 @@ const FollowedPosts = ({ userId }) => {
 
 	useEffect(() => {
 		fetchFollowedUsers(userId).then((res) => {
-			res.forEach((item) => {
-				listFetch(item).then((res) => {
-					setIsLoading(true);
-					setTimeout(() => {
-						setImageState((state) => {
-							return [...state, ...res];
-						});
-						setIsLoading(false);
-					}, 400);
+			if (res !== null) {
+				res.forEach((item) => {
+					listFetch(item).then((res) => {
+						setIsLoading(true);
+						setTimeout(() => {
+							setImageState((state) => {
+								return [...state, ...res];
+							});
+							setIsLoading(false);
+						}, 400);
+					});
 				});
-			});
+			}
 		});
 	}, []);
 

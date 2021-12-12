@@ -5,14 +5,11 @@ const fetchFollowedUsers = async (userId) => {
 	const list = await (
 		await get(ref(database, `/follows/${userId}`))
 	).exportVal();
-	return Object.keys(list);
-	// .then((res) => {
-	// console.log(Object.keys(res.val()));
-	// return Object.keys(res.val());
-	// })
-	// .catch((err) => {
-	// console.log(err);
-	// });
+	if (list === null) {
+		return null;
+	} else {
+		return Object.keys(list);
+	}
 };
 
 export default fetchFollowedUsers;
