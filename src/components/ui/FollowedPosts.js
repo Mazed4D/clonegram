@@ -25,11 +25,13 @@ const FollowedPosts = ({ userId }) => {
 		fetchFollowedUsers(userId).then((res) => {
 			res.forEach((item) => {
 				listFetch(item).then((res) => {
+					setIsLoading(true);
 					setTimeout(() => {
 						setImageState((state) => {
 							return [...state, ...res];
 						});
-					}, 300);
+						setIsLoading(false);
+					}, 400);
 				});
 			});
 		});
