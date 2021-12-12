@@ -41,7 +41,7 @@ const CardDiv = styled.div`
 		display: flex;
 		justify-content: space-around;
 		align-items: center;
-		button {
+		/* button {
 			color: white;
 			cursor: pointer;
 
@@ -53,7 +53,7 @@ const CardDiv = styled.div`
 			&:active {
 				color: red;
 			}
-		}
+		} */
 	}
 `;
 
@@ -86,6 +86,7 @@ const Card = ({ user, image, title = 'Placeholder', postName = '' }) => {
 	const { user: currentUser } = useAuth();
 	const [userName, setUserName] = useState('user');
 	const [likeNum, setLikeNum] = useState(0);
+	const [isLiked, setIsLiked] = useState(false);
 	const [followState, setFollowState] = useState(false);
 	const likesRef = dbRef(database, `/posts/${postName}/likes`);
 	const navigate = useNavigate();
@@ -95,8 +96,12 @@ const Card = ({ user, image, title = 'Placeholder', postName = '' }) => {
 			const data = snapshot.val();
 			if (data !== null) {
 				setLikeNum(Object.keys(data).length);
+				if (Object.keys(data).includes(currentUser.uid)) {
+					setIsLiked(true);
+				}
 			} else {
 				setLikeNum(0);
+				setIsLiked(false);
 			}
 		});
 	};
@@ -135,7 +140,6 @@ const Card = ({ user, image, title = 'Placeholder', postName = '' }) => {
 		const like = () => {
 			get(ref).then((snapshot) => {
 				const res = snapshot.val();
-				console.log(res);
 				if (res === null || res[user] === false) {
 					const data = {
 						[user]: true,
@@ -157,6 +161,9 @@ const Card = ({ user, image, title = 'Placeholder', postName = '' }) => {
 		};
 		like();
 		fetchLikes();
+		setIsLiked((state) => {
+			return !state;
+		});
 	};
 
 	const navToUser = () => {
@@ -187,7 +194,12 @@ const Card = ({ user, image, title = 'Placeholder', postName = '' }) => {
 			<div className='bottom'>
 				<p>{likeNum} likes</p>
 				<p>{title}</p>
-				<Button likeFn={likeFn} className='likeBtn'>
+				<Button
+					likeFn={likeFn}
+					className='likeBtn'
+					likeBtn={true}
+					liked={isLiked}
+				>
 					<FontAwesomeIcon icon={faHeart} className='icon' />
 				</Button>
 			</div>
