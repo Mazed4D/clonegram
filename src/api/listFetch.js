@@ -31,7 +31,7 @@ const listFetch = async (user) => {
 
 	// let nextToken;
 
-	const images = await list(imagesRef, { maxResults: 12 });
+	const images = await list(imagesRef, { maxResults: 24 });
 	const imageList = await createList(images.items, user);
 	return imageList;
 };
