@@ -1,12 +1,13 @@
 import React from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
-// import { ref, onValue } from 'firebase/database';
 import { storage } from '../../firebase';
 import { useAuth } from '../../context/AuthContext';
 import { uploadBytes, ref } from 'firebase/storage';
 import { ref as dbRef, set } from 'firebase/database';
 import { database } from '../../firebase';
+import { useNavigate } from 'react-router';
+import Loading from './Loading';
 
 const Image = styled.img`
 	width: 60%;
@@ -76,13 +77,13 @@ const AddComponent = () => {
 	const [image, setImage] = useState();
 	const [title, setTitle] = useState('');
 	const [imgBlob, setImgBlob] = useState();
-	const [extension, setExtension] = useState();
+	const [isLoading, setIsLoading] = useState(false);
+	const navigate = useNavigate();
 	const { user } = useAuth();
 
 	const changeHandler = (event) => {
 		const filename = event.target.files[0].name;
 		setImage(event.target.files[0]);
-		setExtension(filename.substring(filename.lastIndexOf('.') + 1));
 		setImgBlob(URL.createObjectURL(event.target.files[0]));
 	};
 
@@ -91,23 +92,23 @@ const AddComponent = () => {
 	};
 
 	const submitImage = async () => {
+		setIsLoading(true);
 		const imgName = Date.now();
-		const path = `/posts/${user.uid}/${imgName}.${extension}`;
+		const path = `/posts/${user.uid}/${imgName}`;
 		const metaPath = `/posts/${user.uid}${imgName}`;
 		const postRef = ref(storage, path);
 		const metaRef = dbRef(database, metaPath);
 		set(metaRef, {
 			title: title,
 		})
-			.then((res) => {
-				alert(res);
-			})
+			.then((res) => {})
 			.catch((err) => {
 				console.info(err);
 			});
 		uploadBytes(postRef, image)
 			.then(() => {
-				alert('Image posted!');
+				setIsLoading(false);
+				navigate('/');
 			})
 			.catch((err) => {
 				console.log(err);
@@ -116,6 +117,7 @@ const AddComponent = () => {
 
 	return (
 		<ImageUpload>
+			{isLoading && <Loading />}
 			<label htmlFor='image' className='imageLabel'>
 				Choose image
 			</label>
