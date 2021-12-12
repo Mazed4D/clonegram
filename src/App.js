@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import { useAuth } from './context/AuthContext';
 import Posts from './pages/Posts';
 import Layout from './components/layout/Layout';
+import Public from './pages/Public';
 
 function App() {
 	const { user } = useAuth();
@@ -17,6 +18,7 @@ function App() {
 				{user ? (
 					<>
 						<Route path='' exact element={<Home />} />
+						<Route path='public' element={<Public />} />
 						<Route path='user/:userId' element={<Profile />} />
 						<Route path='add' exact element={<Add />} />
 						<Route path='posts/:userId' element={<Posts />} />

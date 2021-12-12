@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Button from './Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+	faGlobe,
 	faHome,
 	faPlusCircle,
 	faUser,
@@ -42,6 +43,9 @@ const BottomNavigation = () => {
 		<BottomNav>
 			<Button navigateTo='/' navFn={btnNavigate} disabled={disabled}>
 				<FontAwesomeIcon icon={faHome} />
+			</Button>
+			<Button navigateTo='/public' navFn={btnNavigate} disabled={disabled}>
+				<FontAwesomeIcon icon={faGlobe} />
 			</Button>
 			<Button navigateTo='/add' navFn={btnNavigate} disabled={disabled}>
 				<FontAwesomeIcon icon={faPlusCircle} />
