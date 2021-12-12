@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
 import placeholderImg from '../images/user.png';
 import styled from 'styled-components';
 import ImagesComponent from '../components/ui/ImagesComponent';

@@ -82,7 +82,6 @@ const AddComponent = () => {
 	const { user } = useAuth();
 
 	const changeHandler = (event) => {
-		const filename = event.target.files[0].name;
 		setImage(event.target.files[0]);
 		setImgBlob(URL.createObjectURL(event.target.files[0]));
 	};
