@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import { storage } from '../../firebase';
-import { getDownloadURL, ref, list } from 'firebase/storage';
 import styled from 'styled-components';
 import ProfileImage from './ProfileImage';
 import Loading from './Loading';
 import { useNavigate } from 'react-router';
-import { onValue } from 'firebase/database';
+import listFetch from '../../api/listFetch';
 
 const ImageBox = styled.div`
 	display: grid;
@@ -19,53 +17,45 @@ const ImageBox = styled.div`
 
 const ImagesComponent = ({ userId }) => {
 	const navigate = useNavigate();
-	const imagesRef = ref(storage, `/posts/${userId}`);
-	const [images, setImages] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [nextPageToken, setNextPageToken] = useState();
+	const [imageState, setImageState] = useState([]);
+
 	useEffect(() => {
-		let imageUrls = [];
-		const listFetch = async () => {
-			await list(imagesRef, { maxResults: 12 }).then((res) => {
-				setNextPageToken(res.nextPageToken);
-				res.items.forEach((item) => {
-					getDownloadURL(item).then((res) => {
-						imageUrls.push(res);
-					});
+		listFetch(userId).then((res) => {
+			setIsLoading(true);
+			setTimeout(() => {
+				setImageState((state) => {
+					return [...state, ...res];
 				});
-			});
-		};
-		listFetch();
-		setIsLoading(true);
-		setTimeout(() => {
-			setImages(imageUrls);
-			setIsLoading(false);
-		}, 700);
+				setIsLoading(false);
+			}, 400);
+		});
 	}, []);
 
-	const loadMore = async () => {
-		let imageUrls = [];
-		const listFetch = async () => {
-			await list(imagesRef, { maxResults: 12, pageToken: nextPageToken }).then(
-				(res) => {
-					setNextPageToken(res.nextPageToken);
-					res.items.forEach((item) => {
-						getDownloadURL(item).then((res) => {
-							imageUrls.push(res);
-						});
-					});
-				}
-			);
-		};
-		listFetch();
-		setIsLoading(true);
-		setTimeout(() => {
-			setImages((state) => {
-				return [...state, imageUrls];
-			});
-			setIsLoading(false);
-		}, 700);
-	};
+	// const loadMore = async () => {
+	// 	let imageUrls = [];
+	// 	const listFetch = async () => {
+	// 		await list(imagesRef, { maxResults: 12, pageToken: nextPageToken }).then(
+	// 			(res) => {
+	// 				setNextPageToken(res.nextPageToken);
+	// 				res.items.forEach((item) => {
+	// 					getDownloadURL(item).then((res) => {
+	// 						imageUrls.push(res);
+	// 					});
+	// 				});
+	// 			}
+	// 		);
+	// 	};
+	// 	listFetch();
+	// 	setIsLoading(true);
+	// 	setTimeout(() => {
+	// 		setImages((state) => {
+	// 			return [...state, imageUrls];
+	// 		});
+	// 		setIsLoading(false);
+	// 	}, 700);
+	// };
 
 	const navigateToPosts = () => {
 		navigate(`/posts/${userId}`);
@@ -75,13 +65,12 @@ const ImagesComponent = ({ userId }) => {
 		<>
 			{isLoading && <Loading />}
 			<ImageBox>
-				{images.map((url, index) => {
-					console.log(url);
+				{imageState.map((item) => {
 					return (
 						<ProfileImage
-							url={url}
-							alt='sneed'
-							key={index}
+							url={item.url}
+							alt={item.title}
+							key={item.name}
 							navigateToPosts={navigateToPosts}
 						/>
 					);
