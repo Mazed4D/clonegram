@@ -1,5 +1,5 @@
 import { database } from '../firebase';
-import { ref, get, set, remove } from 'firebase/database';
+import { ref, get, set, remove, update } from 'firebase/database';
 
 const followFunc = async (userId, followedUserId) => {
 	const followedUserRef = ref(database, `/followed/${followedUserId}`);
@@ -8,7 +8,7 @@ const followFunc = async (userId, followedUserId) => {
 
 	const followAction = () => {
 		console.log('add');
-		set(followedUserRef, {
+		update(followedUserRef, {
 			[userId]: true,
 		})
 			.then((res) => {
@@ -17,7 +17,7 @@ const followFunc = async (userId, followedUserId) => {
 			.catch((err) => {
 				console.log(err);
 			});
-		set(followUserRef, {
+		update(followUserRef, {
 			[followedUserId]: true,
 		})
 			.then((res) => {
