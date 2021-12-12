@@ -4,11 +4,12 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import placeholder from '../../images/user.png';
 import Button from './Button';
-import { database } from '../../firebase';
+import { database, storage } from '../../firebase';
 import { update, remove, onValue, ref as dbRef, get } from 'firebase/database';
 import { useNavigate } from 'react-router';
 import followFunc from '../../api/followFunc';
 import { useAuth } from '../../context/AuthContext';
+import { deleteObject, ref } from 'firebase/storage';
 
 const CardDiv = styled.div`
 	background-color: #0096ce;
@@ -82,12 +83,33 @@ const Img = styled.img`
 	height: fit-content;
 `;
 
+const DeleteButton = styled.button`
+	font-weight: 600;
+	width: 6rem;
+	cursor: pointer;
+	background-color: red;
+	color: white;
+	border-radius: 10px;
+	border: none;
+	padding: 1rem;
+	transition: all 0.1s ease-in;
+	&:hover,
+	:active {
+		transform: scale(0.9);
+	}
+	&:active {
+		color: #006891;
+		background-color: white;
+	}
+`;
+
 const Card = ({ user, image, title = 'Placeholder', postName = '' }) => {
 	const { user: currentUser } = useAuth();
 	const [userName, setUserName] = useState('user');
 	const [likeNum, setLikeNum] = useState(0);
 	const [isLiked, setIsLiked] = useState(false);
 	const [followState, setFollowState] = useState(false);
+	const [displayStyle, setDisplayStyle] = useState();
 	const likesRef = dbRef(database, `/posts/${postName}/likes`);
 	const navigate = useNavigate();
 
@@ -177,8 +199,21 @@ const Card = ({ user, image, title = 'Placeholder', postName = '' }) => {
 		});
 	};
 
+	const deleteFn = () => {
+		const postId = postName.substring(postName.length - 13);
+		const userId = postName.substring(0, postName.length - 13);
+		const db = dbRef(database, `posts/${postName}`);
+		const store = ref(storage, `posts/${userId}/${postId}`);
+		deleteObject(store).then(() => {
+			remove(db).then((res) => {
+				console.log(res);
+				setDisplayStyle({ display: 'none' });
+			});
+		});
+	};
+
 	return (
-		<CardDiv>
+		<CardDiv style={displayStyle}>
 			<div className='top'>
 				<img src={placeholder} alt='user' onClick={navToUser} />
 				<h3 onClick={navToUser}>{userName}</h3>
@@ -187,7 +222,7 @@ const Card = ({ user, image, title = 'Placeholder', postName = '' }) => {
 						{followState ? 'Unfollow' : 'Follow'}
 					</FollowBtn>
 				) : (
-					<div></div>
+					<DeleteButton onClick={deleteFn}>Delete</DeleteButton>
 				)}
 			</div>
 			<Img src={image} alt={title} />
