@@ -1,4 +1,5 @@
 import React from 'react';
+import reactDom from 'react-dom';
 import styled from 'styled-components';
 
 const Overlay = styled.div`
@@ -23,10 +24,11 @@ const Overlay = styled.div`
 `;
 
 const Loading = ({ text = 'Loading...' }) => {
-	return (
+	return reactDom.createPortal(
 		<Overlay>
 			<h2>{text}</h2>
-		</Overlay>
+		</Overlay>,
+		document.getElementById('loading')
 	);
 };
 
