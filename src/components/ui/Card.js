@@ -2,7 +2,7 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import placeholder from '../../images/placeholder.jpg';
+import placeholder from '../../images/user.png';
 import Button from './Button';
 import { database } from '../../firebase';
 import { update, remove, onValue, ref as dbRef, get } from 'firebase/database';
