@@ -120,6 +120,7 @@ const Card = ({ user, image, title = 'Placeholder', postName = '' }) => {
 				setLikeNum(Object.keys(data).length);
 				if (Object.keys(data).includes(currentUser.uid)) {
 					setIsLiked(true);
+					console.log('setted');
 				}
 			} else {
 				setLikeNum(0);
@@ -162,11 +163,11 @@ const Card = ({ user, image, title = 'Placeholder', postName = '' }) => {
 		const like = () => {
 			get(ref).then((snapshot) => {
 				const res = snapshot.val();
-				if (res === null || res[user] === false) {
+				// console.log(res[currentUser.uid]);
+				if (res === null || !res[currentUser.uid]) {
 					const data = {
-						[user]: true,
+						[currentUser.uid]: true,
 					};
-
 					update(ref, data)
 						.then((res) => {
 							console.info(res);
@@ -176,7 +177,9 @@ const Card = ({ user, image, title = 'Placeholder', postName = '' }) => {
 						});
 					return;
 				} else {
-					remove(dbRef(database, `/posts/${postName}/likes/${user}`));
+					remove(
+						dbRef(database, `/posts/${postName}/likes/${currentUser.uid}`)
+					);
 					return;
 				}
 			});
